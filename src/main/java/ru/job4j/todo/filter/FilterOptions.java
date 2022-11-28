@@ -1,4 +1,4 @@
-package ru.job4j.todo.model;
+package ru.job4j.todo.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
