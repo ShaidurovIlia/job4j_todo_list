@@ -11,12 +11,14 @@ import ru.job4j.todo.filter.FilterOptions;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.ItemService;
+import ru.job4j.todo.service.UserService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @AllArgsConstructor
 @Controller
@@ -29,6 +31,10 @@ public class ItemController {
     private static final String ITEMS = "items";
     private final ItemService service;
 
+    private final UserService userService;
+
+    private final AtomicInteger userId = new AtomicInteger();
+
     @GetMapping("/items")
     public String items(Model model, HttpSession session) {
         model.addAttribute(ITEMS, this.service.findAll(FilterOptions.ALL));
@@ -40,6 +46,7 @@ public class ItemController {
     @PostMapping("/createItem")
     public String createItem(@ModelAttribute Item item, Model model, HttpSession session) {
         item.setCreated(LocalDateTime.now());
+        item.setUser(this.userService.findById(this.userId.get()));
         this.service.create(item);
         sessions(model, session);
         return "items";
@@ -96,5 +103,6 @@ public class ItemController {
             user.setName("Guest");
         }
         model.addAttribute("user", user);
+        this.userId.set(user.getId());
     }
 }

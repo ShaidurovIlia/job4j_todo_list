@@ -15,7 +15,6 @@ import java.util.function.Function;
 public class ItemRepository {
 
     private static final String DELETE_QUERY = "delete from Item i where i.id = :Id";
-
     private static final String UPDATE_QUERY = "update Item i "
             + "set i.name = :Name, i.description = :Description, i.done = :Done"
             + " where i.id = :Id";

@@ -16,6 +16,10 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_item")
+    private User user;
     private String name;
     private String description;
     private LocalDateTime created;
