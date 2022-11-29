@@ -17,7 +17,6 @@ import java.util.Optional;
 @Controller
 @AllArgsConstructor
 public class UserController {
-
     private static final String VALUE = "Fill in the field";
     private final UserService userService;
 
@@ -29,7 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/registrationPage")
-    public String registrationPage(Model model, HttpSession session, @RequestParam(name = "fail", required = false) Boolean fail) {
+    public String registrationPage(Model model, HttpSession session,
+                                   @RequestParam(name = "fail", required = false) Boolean fail) {
         model.addAttribute("fail", fail != null);
         sessions(model, session);
         return "registration";
@@ -46,7 +46,8 @@ public class UserController {
     }
 
     @GetMapping("/loginPage")
-    public String loginPage(Model model, HttpSession session, @RequestParam(name = "fail", required = false) Boolean fail) {
+    public String loginPage(Model model, HttpSession session,
+                            @RequestParam(name = "fail", required = false) Boolean fail) {
         model.addAttribute("fail", fail != null);
         sessions(model, session);
         return "login";
@@ -54,7 +55,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute User user, HttpServletRequest req) {
-        User userDb = this.userService.findUserByEmailAndPwd(
+        User userDb = this.userService.findUserByEmailAndPassword(
                 user.getEmail(), user.getPassword());
         if (userDb == null) {
             return "redirect:/loginPage?fail=true";
