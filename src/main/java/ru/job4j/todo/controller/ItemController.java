@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.filter.FilterOptions;
 import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
-import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.ItemService;
@@ -15,7 +14,6 @@ import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.UserService;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,14 +50,14 @@ public class ItemController {
                              @RequestParam(value = "category.id", required = false)
                              List<Integer> categoriesId,
                              HttpSession session, Model model) {
+        User user = this.userService.findById(this.userId.get());
         Set<Category> categories = new HashSet<>();
         if (categoriesId != null) {
             categoriesId.forEach(value -> categories.add(this.categoryService.findById(value)));
             item.setCategory(categories);
         }
-        item.setCreated(LocalDateTime.now());
-        item.setUser(this.userService.findById(this.userId.get()));
-        this.service.create(item);
+        item.setUser(user);
+        this.service.create(item, user.getZone());
         sessions(model, session);
         return "items";
     }

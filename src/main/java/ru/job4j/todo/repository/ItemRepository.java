@@ -20,9 +20,15 @@ public class ItemRepository {
             + " where item.id = :Id";
     private final SessionFactory factory;
 
-    public void create(Item item) {
-        SessionWrapper.wrap(session ->
-                session.save(item), factory);
+    public void create(Item item, String timeZone) {
+        try {
+            SessionWrapper.zoneWrap(
+                    session -> session.save(item),
+                    factory, timeZone
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Item> findAll() {
