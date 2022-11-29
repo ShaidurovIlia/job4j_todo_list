@@ -49,28 +49,29 @@
 
 * Страница регистрации. Регистрация обязательная.
 ---
-![](../../Users/Admin/Desktop/444.png)
+![444](https://user-images.githubusercontent.com/87298998/204645526-85d10283-a03b-41d9-bc94-4bb9d787829c.png)
+
 
 * Страница входа.
 ---
-![](../../Users/Admin/Desktop/333.png)
+![333](https://user-images.githubusercontent.com/87298998/204646676-b11625c2-2581-44b6-af3a-4652ab8365a0.png)
 
 * Окно для добавления новой задачи.
 ---
-![](../../Users/Admin/Desktop/111.png)
+![111](https://user-images.githubusercontent.com/87298998/204646766-df05f64e-e306-439f-ac3a-8ebd32cae3f6.png)
 
 * Главная страница. Тут отображаются новые и выполнение задачи за последние сутки.
 ---
-![](../../Users/Admin/Desktop/666.png)
+![666](https://user-images.githubusercontent.com/87298998/204646958-bf6d7fbb-7e64-4330-97fe-012735935fdc.png)
 
 * Нажав на задачу, можно установить ее статус или удалить.
 ---
-![](../../Users/Admin/Desktop/555.png)
+![555](https://user-images.githubusercontent.com/87298998/204647032-3084ddcb-6a9b-4c71-9ee6-ba0151a06d22.png)
 
 * Окно редактирования задачи.
 ---
-![](../../Users/Admin/Desktop/777.png)
+![777](https://user-images.githubusercontent.com/87298998/204647057-44cb93df-9e3b-4aa9-afb4-e0881720bb90.png)
 
 * Список всех задач. Их можно сортировать на (All, New, Done).
 ---
-![](../../Users/Admin/Desktop/222.png)
+![222](https://user-images.githubusercontent.com/87298998/204647126-27ed7832-cf79-43f1-abcd-b62f03c507c5.png)
