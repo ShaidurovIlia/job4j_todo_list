@@ -3,48 +3,60 @@ package ru.job4j.todo.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.filter.FilterOptions;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.ItemService;
+import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.UserService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @AllArgsConstructor
 @Controller
 public class ItemController {
-
+    private static final String PATH = "redirect:/items";
+    private static final String ITEMS = "items";
+    private static final String CATEGORY = "category";
+    private static final String PRIORITY = "priority";
+    private static final String CHOOSES = "chooses";
     private static final List<String> FILTER = Arrays.stream(FilterOptions.values())
             .map(FilterOptions::getValue)
             .toList();
-    private static final String PATH = "redirect:/items";
-    private static final String ITEMS = "items";
-    private final ItemService service;
-
-    private final UserService userService;
-
     private final AtomicInteger userId = new AtomicInteger();
+    private final ItemService service;
+    private final UserService userService;
+    private final CategoryService categoryService;
+
+    private final PriorityService priorityService;
 
     @GetMapping("/items")
     public String items(Model model, HttpSession session) {
-        model.addAttribute(ITEMS, this.service.findAll(FilterOptions.ALL));
-        model.addAttribute("chooses", FILTER);
+        model.addAttribute(ITEMS, this.service.findAllByFilter(FilterOptions.ALL));
+        model.addAttribute(CHOOSES, FILTER);
+        model.addAttribute(CATEGORY, this.categoryService.findAll());
+        model.addAttribute(PRIORITY, this.priorityService.findAll());
         sessions(model, session);
         return ITEMS;
     }
 
     @PostMapping("/createItem")
-    public String createItem(@ModelAttribute Item item, Model model, HttpSession session) {
+    public String createItem(@ModelAttribute Item item,
+                             @RequestParam(value = "category.id", required = false)
+                             List<Integer> categoriesId,
+                             HttpSession session, Model model) {
+        Set<Category> categories = new HashSet<>();
+        if (categoriesId != null) {
+            categoriesId.forEach(value -> categories.add(this.categoryService.findById(value)));
+            item.setCategory(categories);
+        }
         item.setCreated(LocalDateTime.now());
         item.setUser(this.userService.findById(this.userId.get()));
         this.service.create(item);
@@ -61,10 +73,10 @@ public class ItemController {
 
     @GetMapping("/formItemCondition/{id}")
     public String sortItemCondition(Model model, @PathVariable String id, HttpSession session) {
-        model.addAttribute(ITEMS,
-                this.service.findAll(FilterOptions.valueOf(id.toUpperCase(Locale.ROOT))));
+        model.addAttribute(ITEMS, this.service.findAllByFilter(FilterOptions.valueOf(
+                id.toUpperCase(Locale.ROOT))));
         model.addAttribute("selectedId", id);
-        model.addAttribute("chooses", FILTER);
+        model.addAttribute(CHOOSES, FILTER);
         sessions(model, session);
         return ITEMS;
     }
@@ -78,12 +90,21 @@ public class ItemController {
     @GetMapping("/formUpdateItem/{itemId}")
     public String formUpdateItem(Model model, @PathVariable("itemId") int id, HttpSession session) {
         model.addAttribute(ITEMS, this.service.findById(id));
+        model.addAttribute(CATEGORY, this.categoryService.findAll());
+        model.addAttribute(PRIORITY, this.priorityService.findAll());
         sessions(model, session);
         return "updateItem";
     }
 
     @PostMapping("/updateItem")
-    public String updateItem(@ModelAttribute Item item) {
+    public String updateItem(@ModelAttribute Item item,
+                             @RequestParam(value = "category.id", required = false)
+                             List<Integer> categoriesId) {
+        Set<Category> categories = new HashSet<>();
+        if (categoriesId != null) {
+            categoriesId.forEach(value -> categories.add(this.categoryService.findById(value)));
+            item.setCategory(categories);
+        }
         this.service.update(item);
         return String.format("redirect:/formItemId/%s", item.getId());
     }
